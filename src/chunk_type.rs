@@ -1,3 +1,19 @@
+//! # Requirements <https://picklenerd.github.io/pngme_book/chapter_1.html>
+//! 1. Copy the unit tests below and paste them at the bottom of your chunk_type.rs file.
+//! 2. Write a ChunkType struct with your implementation of PNG chunk types.
+//! 3. Implement TryFrom<[u8; 4]> for your ChunkType.
+//! 4. Implement FromStr for your ChunkType.
+//! 5. Implement Display for your ChunkType.
+//! 6. Implement or derive PartialEq and Eq for your ChunkType
+//! 7. Required methods:
+//!     7.1 fn bytes(&self) -> [u8; 4]
+//!     7.2 fn is_valid(&self) -> bool
+//!     7.3 fn is_critical(&self) -> bool
+//!     7.4 fn is_public(&self) -> bool
+//!     7.5 fn is_reserved_bit_valid(&self) -> bool
+//!     7.6 fn is_safe_to_copy(&self) -> bool
+//! 8. Pass all of the unit tests.
+
 use std::{fmt::Display, str::FromStr};
 
 #[derive(PartialEq, Debug)]

@@ -1,3 +1,18 @@
+//! # Requirements <https://picklenerd.github.io/pngme_book/chapter_2.html>
+//! 1. Copy the unit tests below and paste them at the bottom of your chunk.rs file.
+//! 2. Write a Chunk struct with your implementation of PNG chunks.
+//! 3. Implement TryFrom<&[u8]> for your Chunk.
+//! 4. Implement Display for your Chunk.
+//! 5. Required methods:
+//!     5.1 fn new(chunk_type: ChunkType, data: Vec<u8>) -> Chunk
+//!     5.2 fn length(&self) -> u32
+//!     5.3 fn chunk_type(&self) -> &ChunkType
+//!     5.4 fn data(&self) -> &[u8]
+//!     5.5 fn crc(&self) -> u32
+//!     5.6 fn data_as_string(&self) -> Result<String>
+//!     5.7 fn as_bytes(&self) -> Vec<u8>
+//! 6. Pass all of the unit tests.
+
 use std::fmt::Display;
 
 use crate::chunk_type::ChunkType;
@@ -56,7 +71,16 @@ impl TryFrom<&[u8]> for Chunk {
     type Error = crate::Error;
 
     fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
+        if value.len() < 4 + 4 + 4 {
+            return Err(anyhow::anyhow!("Invalid chunk length").into());
+        }
+
         let length = u32::from_be_bytes([value[0], value[1], value[2], value[3]]);
+
+        if value.len() < 4 + 4 + length as usize + 4 {
+            return Err(anyhow::anyhow!("Invalid chunk length").into());
+        }
+
         let chunk_type = ChunkType::try_from([value[4], value[5], value[6], value[7]])?;
         let data = value[8..8 + length as usize].to_vec();
         let crc = u32::from_be_bytes([
